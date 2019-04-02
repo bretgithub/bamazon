@@ -30,16 +30,16 @@ function bamazon() {
 
     console.table(results);
     // for (var i = 0; i < results.length; i++) {
-    console.log(
-      results[i].item_id +
-        " | " +
-        results[i].product_name +
-        " | Unit Price: $" +
-        results[i].price_to_customer +
-        " | Units Remaining: " +
-        results[i].stock_quantity
-    );
-    console.log("------------------");
+    // console.log(
+    //   results[i].item_id +
+    //     " | " +
+    //     results[i].product_name +
+    //     " | Unit Price: $" +
+    //     results[i].price_to_customer +
+    //     " | Units Remaining: " +
+    //     results[i].stock_quantity
+    // );
+    // console.log("------------------");
     // }
     menu();
   });
@@ -78,9 +78,15 @@ function buyStuff() {
         name: "quantity"
       }
     ])
+
+    // if (bidAmount.bid > product.current_bid) {
+    //   connection.query(
+    //     "UPDATE product SET ? WHERE ?",
+    //     [
     .then(function(answers) {
       connection.query(
-        `SELECT * FROM products WHERE item_id = ${answers.item}`,
+        `SELECT * FROM products WHERE ?`,
+        { item_id: answers.item },
         function(err, result) {
           if (err) {
             console.log("Error with checking item ID: " + err);
@@ -89,9 +95,8 @@ function buyStuff() {
             let newQty = result[0].stock_quantity - answers.quantity;
             let total = answers.quantity * result[0].price_to_customer;
             connection.query(
-              `UPDATE products SET stock_quantity = ${newQty} WHERE item_id = ${
-                answers.item
-              }`,
+              `UPDATE products SET ? WHERE ?`,
+              [{ stock_quantity: newQty }, { item_id: answers.item }],
               function(err, result) {
                 if (err) {
                   console.log("Error with updating table: " + err);
