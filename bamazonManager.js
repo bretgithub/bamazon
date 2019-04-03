@@ -71,26 +71,30 @@ function lowInventory() {
       }
 
       if (result.choice === "View low inventory") {
-        lowQty = 50;
-        connection.query(
-          `SELECT * FROM products WHERE stock_quantity <= ?`,
-          [lowQty],
-          function(err, result) {
-            if (err) {
-              console.log("Error in connecting :" + err);
-              connection.end();
-            } else if (result.length === 0) {
-              console.log("No items are low inventory");
-              connection.end();
-            } else {
-              console.table(result);
-              console.log(typeof result);
-              restock(result); //invoking restock and passing result as argument
-            }
-          }
-        );
+        checkLowInventory();
       }
     });
+}
+
+function checkLowInventory() {
+  lowQty = 50;
+  connection.query(
+    `SELECT * FROM products WHERE stock_quantity <= ?`,
+    [lowQty],
+    function(err, result) {
+      if (err) {
+        console.log("Error in connecting :" + err);
+        connection.end();
+      } else if (result.length === 0) {
+        console.log("No items are low inventory");
+        connection.end();
+      } else {
+        console.table(result);
+        console.log(typeof result);
+        restock(result); //invoking restock and passing result as argument
+      }
+    }
+  );
 }
 
 function restock(lowStockArray) {
@@ -98,33 +102,44 @@ function restock(lowStockArray) {
   //console.log(lowStockArray)
   //var ids = lowStockArray.map(each => `${each.item_id}`);
   //console.log(ids);
-  var ids = lowStockArray.map(each => "" + each.item_id + "");
+  let ids = lowStockArray.map(each => "" + each.item_id + "");
   // ids = JSON.parse(ids);
-
   inquirer
     .prompt([
       {
-        name: "which",
         type: "list",
-        choices: ids
+        message: "Please pick which product you'd like to restock",
+        choices: ids,
+        name: "which"
+      },
+      {
+        type: "number",
+        message: "How much would you like to restock",
+        name: "qty"
       }
     ])
     .then(function(answers) {
-      console.log(answers);
+      connection.query(
+        `UPDATE products SET stock_quantity = stock_quantity + ? WHERE ?`,
+        [answers.qty, { item_id: answers.which }]
+      );
+    })
+    .then(function() {
+      inquirer
+        .prompt([
+          {
+            type: "confirm",
+            message: "Would you like to restock another item?",
+            name: "restock_more"
+          }
+        ])
+        .then(function(answers) {
+          if (answers.restock_more) {
+            checkLowInventory();
+          } else if (!answers.restock_more) {
+            console.log("Take a break");
+            connection.end();
+          }
+        });
     });
-  // connection.query("SELECT * FROM product", function(err, result) {
-  //   if (err) throw err;
-  //   array = result;
-  //   let low = [];
-  //   for (i = 0; i < array.length; i++) {
-  //     console.log(array[i].item_name);
-  //     console.log(array[i].current_bid);
-  //     bidItems.push(array[i].item_name);
-  //     inquirer.prompt([
-  //       {
-  //         type: "list"
-  //       }
-  //     ]);
-  //   }
-  // });
 }
