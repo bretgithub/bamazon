@@ -62,6 +62,14 @@ The **Add New Product** option allows the user to enter details about a new prod
 
 	node bamazonManager.js
 	
+### Demo Videos
+
+Click the links below to view bamazon customer interface video or bamazon manager interface video
+
+* [bamazon customer](clientBamazon.webm)
+
+* [bamazon manager](managerBamazon.webm)
+	
 ### Roadmap
 
 I'd like to continue to develop this to allow the manager to add stock to inventory if not low, and add the supervisor role which will focuses on joining tables. 
