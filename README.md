@@ -64,7 +64,7 @@ The **Add New Product** option allows the user to enter details about a new prod
 	
 ### Demo Videos
 
-Click the links below to view bamazon customer interface video or bamazon manager interface video
+Click the links below to view and download bamazon customer interface video or bamazon manager interface video
 
 * [bamazon customer](clientBamazon.webm)
 
