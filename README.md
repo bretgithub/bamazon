@@ -13,12 +13,10 @@ To run the app please follow the steps below:
 
 	git clone git@github.com:bretgithub/bamazon.git
 	cd bamazon
-	npm init -y
 	npm install
-	npm install inquirer
-	npm install mysql
 	open bamazon.sql (then run the statements)
-
+	add your your db user and pw info in bamazonCustomer.js and bamazonManager.js
+	
 ### Customer Role
 
 The customer intrerface allows the user to view inventory of store items by:
